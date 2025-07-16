@@ -351,6 +351,7 @@ export const useLostAndFound = () => {
       const res = await fetch(BASE_URL, {
         headers: {
           Authorization: `Bearer ${token}`,
+
         },
       });
       const data = await res.json();
@@ -367,51 +368,55 @@ export const useLostAndFound = () => {
   };
 
   // Create a new item
-  const createItem = async (itemData) => {
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      // Append each field individually
-      formData.append('title', itemData.title);
-      formData.append('description', itemData.description);
-      formData.append('category', itemData.category);
-      formData.append('location', itemData.location);
-      formData.append('phoneNumber', itemData.phoneNumber);
-      formData.append('type', itemData.type);
-      console.log(itemData);
-      // Append image if present and valid
-      if (itemData.image && itemData.image.startsWith('file://')) {
-        const localUri = itemData.image;
-        const filename = localUri.split('/').pop();
-        const match = /\.(\w+)$/.exec(filename || '');
-        const type = match ? `image/${match[1]}` : `image`;
+const createItem = async (itemData) => {
+  setLoading(true);
+  try {
+    const formData = new FormData();
+    formData.append('title', itemData.title);
+    formData.append('description', itemData.description);
+    formData.append('category', itemData.category);
+    formData.append('location', itemData.location);
+    formData.append('phoneNumber', itemData.phoneNumber);
+    formData.append('type', itemData.type);
 
-        formData.append('image', {
-          uri: localUri,
-          name: filename,
-          type,
-        });
-      }
+    if (itemData.image?.uri && itemData.image.uri.startsWith('file://')) {
+      const localUri = itemData.image.uri;
+      const filename = localUri.split('/').pop();
+      const match = /\.(\w+)$/.exec(filename || '');
+      const type = match ? `image/${match[1]}` : `image`;
 
-      const res = await axios.post(BASE_URL, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
+      formData.append('image', {
+        uri: localUri,
+        name: filename,
+        type,
       });
-
-      if (res.status === 201 || res.status === 200) {
-        Toast.show({ type: 'success', text1: 'Item posted successfully' });
-        fetchItems();
-      } else {
-        Toast.show({ type: 'error', text1: res.data?.message || 'Failed to post item' });
-      }
-    } catch (err) {
-      Toast.show({ type: 'error', text1: err.response?.data?.message || 'Error creating item' });
-    } finally {
-      setLoading(false);
     }
-  };
+
+    const res = await axios.post(BASE_URL, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+    if (res.status === 201 || res.status === 200) {
+      Toast.show({ type: 'success', text1: 'Item posted successfully' });
+      fetchItems();
+    } else {
+      Toast.show({ type: 'error', text1: res.data?.message || 'Failed to post item' });
+    }
+  } catch (err) {
+    Toast.show({
+      type: 'error',
+      text1: err.response?.data?.message || 'Error creating item',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
 
 
   // Delete an item

@@ -30,7 +30,8 @@ export const createLostAndFoundItem = async (req, res) => {
     }
 
     // File from Multer/Cloudinary
-    const image = req.file;
+    const image =req.file?.path ||"";
+    console.log(req.file ? req.file.path : "No image uploaded");
 
     const newItem = new LostAndFoundItem({
       title: title.trim(),

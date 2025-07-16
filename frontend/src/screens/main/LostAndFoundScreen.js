@@ -429,13 +429,7 @@ import * as ImagePicker from 'expo-image-picker';
 const LostAndFoundScreen = () => {
   const token = useAuthStore((state) => state.authUser?.token);
   const getid = useAuthStore((state) => state.authUser?._id);
-  const {
-    items,
-    loading,
-    fetchItems,
-    createItem,
-    deleteItem,
-  } = useLostAndFound();
+  const { items, loading, fetchItems, createItem, deleteItem } = useLostAndFound();
 
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -447,13 +441,13 @@ const LostAndFoundScreen = () => {
     type: 'lost',
     location: '',
     phoneNumber: '',
-    category: 'electronics',
-    image: null, // ✅ added
+    category: 'Books',
+    image: null,
   });
 
   const categories = [
-    'electronics', 'clothing', 'books', 'accessories',
-    'documents', 'keys', 'bags', 'other',
+    'Books', 'Clothing', 'Electronics', 'Accessories',
+    'Documents', 'Keys', 'Bags', 'Other',
   ];
 
   useEffect(() => {
@@ -466,9 +460,19 @@ const LostAndFoundScreen = () => {
     setRefreshing(false);
   };
 
+  const isValidPhone = (phone) => {
+    const phoneRegex = /^\+?\d{7,15}$/;
+    return phoneRegex.test(phone);
+  };
+
   const handleCreateItem = async () => {
     if (!newItem.title.trim() || !newItem.description.trim()) {
       alert('Please fill in all required fields');
+      return;
+    }
+
+    if (!isValidPhone(newItem.phoneNumber)) {
+      alert('Please enter a valid phone number (7–15 digits, optional +)');
       return;
     }
 
@@ -480,8 +484,8 @@ const LostAndFoundScreen = () => {
       type: 'lost',
       location: '',
       phoneNumber: '',
-      category: 'electronics',
-      image: null, // ✅ reset image
+      category: 'Books',
+      image: null,
     });
     fetchItems();
   };
@@ -520,7 +524,7 @@ const LostAndFoundScreen = () => {
               {item.type?.toUpperCase() || 'TYPE'}
             </Chip>
           </View>
-          {getid === item.postedBy._id && (
+          {getid === item.postedBy?._id && (
             <TouchableOpacity
               onPress={() => handleDeleteItem(item._id)}
               style={styles.deleteButton}
@@ -551,13 +555,12 @@ const LostAndFoundScreen = () => {
               {new Date(item.createdAt).toLocaleDateString()}
             </Text>
           </View>
-          <Image
-          
-          
-          alt="Item Image"
-          source={item.image}
-          style={{ width: '100%', height: 300, borderRadius: 10, marginTop: 10,display: 'flex',justifyContent: 'center', alignItems: 'center' }}
-          ></Image>
+          {item.image && (
+            <Image
+              source={{ uri: item.image }}
+              style={styles.image}
+            />
+          )}
         </View>
       </Card.Content>
     </Card>
@@ -573,7 +576,7 @@ const LostAndFoundScreen = () => {
           style={styles.searchBar}
         />
         <View style={styles.filterContainer}>
-          {['all', 'lost', 'found'].map(type => (
+          {['all', 'lost', 'found'].map((type) => (
             <TouchableOpacity
               key={type}
               style={[
@@ -583,7 +586,10 @@ const LostAndFoundScreen = () => {
               onPress={() => setFilterType(type)}
             >
               <Text
-                style={[styles.filterText, filterType === type && styles.activeFilterText]}
+                style={[
+                  styles.filterText,
+                  filterType === type && styles.activeFilterText,
+                ]}
               >
                 {type.charAt(0).toUpperCase() + type.slice(1)}
               </Text>
@@ -604,7 +610,6 @@ const LostAndFoundScreen = () => {
 
       <FAB style={styles.fab} icon="plus" onPress={() => setModalVisible(true)} />
 
-      {/* MODAL */}
       <Portal>
         <Modal
           visible={modalVisible}
@@ -614,12 +619,11 @@ const LostAndFoundScreen = () => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <Title style={styles.modalTitle}>Post New Item</Title>
 
-            {/* Upload Image Button */}
             <TouchableOpacity
               onPress={async () => {
                 const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
                 if (!permissionResult.granted) {
-                  alert("Permission to access camera roll is required!");
+                  alert('Permission to access media library is required!');
                   return;
                 }
 
@@ -627,22 +631,20 @@ const LostAndFoundScreen = () => {
                   allowsEditing: true,
                   aspect: [4, 3],
                   quality: 1,
-                  base64: false,
                 });
 
-                if (!pickerResult.canceled) {
+                if (!pickerResult.canceled && pickerResult.assets?.length > 0) {
                   const uri = pickerResult.assets[0].uri;
-                  setNewItem({ ...newItem, image: { uri } }); // ✅ FIXED
+                  setNewItem({ ...newItem, image: { uri } });
                 }
               }}
               style={styles.imageUploadButton}
             >
               <Text style={styles.imageUploadText}>
-                {newItem.image ? "Change Image" : "Upload Image"}
+                {newItem.image ? 'Change Image' : 'Upload Image'}
               </Text>
             </TouchableOpacity>
 
-            {/* Image Preview */}
             {newItem.image && (
               <Image
                 source={{ uri: newItem.image.uri }}
@@ -650,7 +652,6 @@ const LostAndFoundScreen = () => {
               />
             )}
 
-            {/* FORM */}
             <TextInput
               label="Title *"
               value={newItem.title}
@@ -661,7 +662,9 @@ const LostAndFoundScreen = () => {
             <TextInput
               label="Description *"
               value={newItem.description}
-              onChangeText={(text) => setNewItem({ ...newItem, description: text })}
+              onChangeText={(text) =>
+                setNewItem({ ...newItem, description: text })
+              }
               style={styles.input}
               mode="outlined"
               multiline
@@ -676,22 +679,32 @@ const LostAndFoundScreen = () => {
             <TextInput
               label="Phone Number"
               value={newItem.phoneNumber}
-              onChangeText={(text) => setNewItem({ ...newItem, phoneNumber: text })}
+              onChangeText={(text) =>
+                setNewItem({ ...newItem, phoneNumber: text })
+              }
               style={styles.input}
               mode="outlined"
+              keyboardType="phone-pad"
             />
 
-            {/* Type Selector */}
             <View style={styles.typeSelector}>
               <Text style={styles.selectorLabel}>Type:</Text>
               <View style={styles.typeButtons}>
                 {['lost', 'found'].map((type) => (
                   <TouchableOpacity
                     key={type}
-                    style={[styles.typeButton, newItem.type === type && styles.activeTypeButton]}
+                    style={[
+                      styles.typeButton,
+                      newItem.type === type && styles.activeTypeButton,
+                    ]}
                     onPress={() => setNewItem({ ...newItem, type })}
                   >
-                    <Text style={[styles.typeButtonText, newItem.type === type && styles.activeTypeButtonText]}>
+                    <Text
+                      style={[
+                        styles.typeButtonText,
+                        newItem.type === type && styles.activeTypeButtonText,
+                      ]}
+                    >
                       {type.toUpperCase()}
                     </Text>
                   </TouchableOpacity>
@@ -699,17 +712,24 @@ const LostAndFoundScreen = () => {
               </View>
             </View>
 
-            {/* Category Selector */}
             <View style={styles.categorySelector}>
               <Text style={styles.selectorLabel}>Category:</Text>
               <View style={styles.categoryGrid}>
                 {categories.map((category) => (
                   <TouchableOpacity
                     key={category}
-                    style={[styles.categoryButton, newItem.category === category && styles.activeCategoryButton]}
+                    style={[
+                      styles.categoryButton,
+                      newItem.category === category && styles.activeCategoryButton,
+                    ]}
                     onPress={() => setNewItem({ ...newItem, category })}
                   >
-                    <Text style={[styles.categoryButtonText, newItem.category === category && styles.activeCategoryButtonText]}>
+                    <Text
+                      style={[
+                        styles.categoryButtonText,
+                        newItem.category === category && styles.activeCategoryButtonText,
+                      ]}
+                    >
                       {category}
                     </Text>
                   </TouchableOpacity>
@@ -717,10 +737,21 @@ const LostAndFoundScreen = () => {
               </View>
             </View>
 
-            {/* Action Buttons */}
             <View style={styles.modalButtons}>
-              <Button mode="outlined" onPress={() => setModalVisible(false)} style={styles.modalButton}>Cancel</Button>
-              <Button mode="contained" onPress={handleCreateItem} style={styles.modalButton}>Post Item</Button>
+              <Button
+                mode="outlined"
+                onPress={() => setModalVisible(false)}
+                style={styles.modalButton}
+              >
+                Cancel
+              </Button>
+              <Button
+                mode="contained"
+                onPress={handleCreateItem}
+                style={styles.modalButton}
+              >
+                Post Item
+              </Button>
             </View>
           </ScrollView>
         </Modal>
@@ -734,13 +765,28 @@ const styles = StyleSheet.create({
   header: { padding: 16, backgroundColor: '#fff', elevation: 2 },
   searchBar: { marginBottom: 12 },
   filterContainer: { flexDirection: 'row', justifyContent: 'space-around' },
-  filterButton: { paddingHorizontal: 20, paddingVertical: 8, borderRadius: 20, backgroundColor: '#f0f0f0' },
+  filterButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f0f0f0',
+  },
   activeFilter: { backgroundColor: '#1976d2' },
   filterText: { color: '#666', fontWeight: '500' },
   activeFilterText: { color: '#fff' },
   itemCard: { marginBottom: 12, elevation: 2 },
-  itemHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
-  itemTitleContainer: { flex: 1, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' },
+  itemHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  itemTitleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
   itemTitle: { fontSize: 18, marginRight: 8, marginBottom: 4 },
   typeChip: { height: 28 },
   deleteButton: { padding: 4 },
@@ -748,24 +794,66 @@ const styles = StyleSheet.create({
   itemDetails: { gap: 6 },
   detailRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   detailText: { color: '#666', fontSize: 14 },
-  fab: { position: 'absolute', margin: 16, right: 0, bottom: 0, backgroundColor: '#1976d2' },
-  modalContainer: { backgroundColor: 'white', padding: 20, margin: 20, borderRadius: 8, maxHeight: '90%' },
+  image: {
+    width: '100%',
+    height: 250,
+    borderRadius: 10,
+    marginTop: 10,
+    resizeMode: 'cover',
+  },
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#1976d2',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    margin: 20,
+    borderRadius: 8,
+    maxHeight: '90%',
+  },
   modalTitle: { textAlign: 'center', marginBottom: 20 },
   input: { marginBottom: 12 },
   typeSelector: { marginBottom: 16 },
-  selectorLabel: { fontSize: 16, fontWeight: '500', marginBottom: 8, color: '#333' },
+  selectorLabel: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 8,
+    color: '#333',
+  },
   typeButtons: { flexDirection: 'row', gap: 12 },
-  typeButton: { flex: 1, paddingVertical: 12, paddingHorizontal: 16, borderRadius: 8, backgroundColor: '#f0f0f0', alignItems: 'center' },
+  typeButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+  },
   activeTypeButton: { backgroundColor: '#1976d2' },
   typeButtonText: { color: '#666', fontWeight: '500' },
   activeTypeButtonText: { color: '#fff' },
   categorySelector: { marginBottom: 20 },
   categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  categoryButton: { paddingVertical: 8, paddingHorizontal: 12, borderRadius: 16, backgroundColor: '#f0f0f0', marginBottom: 8 },
+  categoryButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    backgroundColor: '#f0f0f0',
+    marginBottom: 8,
+  },
   activeCategoryButton: { backgroundColor: '#1976d2' },
   categoryButtonText: { color: '#666', fontSize: 12 },
   activeCategoryButtonText: { color: '#fff' },
-  modalButtons: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+    marginTop: 10,
+  },
   modalButton: { flex: 1 },
   imageUploadButton: {
     backgroundColor: '#f0f0f0',
@@ -788,3 +876,4 @@ const styles = StyleSheet.create({
 });
 
 export default LostAndFoundScreen;
+

@@ -4,49 +4,124 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  TouchableOpacity,
   TextInput,
+  TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { Avatar, IconButton, Divider } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import { useConversation } from '../../store/useConversation';
-import { useGetConversations } from '../../hooks/useGetConversations';
-import { useGetMessages } from '../../hooks/useGetMessages';
-import { useSendMessage } from '../../hooks/useSendMessage';
-import { useListenMessages } from '../../hooks/useListenMessages';
+import Toast from 'react-native-toast-message';
+import { useAuthStore } from '../../store/AuthStore';
 import { colors, spacing, typography } from '../../constants/theme';
 import { extractTime } from '../../utils/extractTime';
 
 export default function ChatScreen() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [messageText, setMessageText] = useState('');
-  
-  const { selectedConversation, setSelectedConversation } = useConversation();
-  const { loading: conversationsLoading, conversations } = useGetConversations();
-  const { messages, loading: messagesLoading } = useGetMessages();
-  const { sendMessage, loading: sendingMessage } = useSendMessage();
-  
-  useListenMessages();
+  const token = useAuthStore((state) => state.authUser?.token);
+  const userId = useAuthStore((state) => state.authUser?._id);
 
-  const filteredConversations = conversations.filter(conversation =>
-    conversation.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    conversation.lastName.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const [conversations, setConversations] = useState([]);
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [messageText, setMessageText] = useState('');
+  const [loadingConversations, setLoadingConversations] = useState(true);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // Fetch conversations
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:5000/api/messages', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to load conversations');
+
+        setConversations(data);
+      } catch (err) {
+        Toast.show({ type: 'error', text1: 'Error', text2: err.message });
+      } finally {
+        setLoadingConversations(false);
+      }
+    };
+
+    fetchConversations();
+  }, [token]);
+
+  // Fetch messages when conversation selected
+  useEffect(() => {
+    if (!selectedConversation?._id) return;
+
+    const fetchMessages = async () => {
+      setLoadingMessages(true);
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:5000/api/messages/${selectedConversation._id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to load messages');
+
+        setMessages(data);
+      } catch (err) {
+        Toast.show({ type: 'error', text1: 'Error', text2: err.message });
+      } finally {
+        setLoadingMessages(false);
+      }
+    };
+
+    fetchMessages();
+  }, [selectedConversation]);
 
   const handleSendMessage = async () => {
-    if (!messageText.trim()) return;
-    
-    await sendMessage(messageText);
-    setMessageText('');
+    if (!messageText.trim() || !selectedConversation) return;
+
+    setSendingMessage(true);
+    try {
+      const res = await fetch(
+        `http://127.0.0.1:5000/api/messages/send/${selectedConversation._id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ message: messageText }),
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send message');
+
+      setMessages((prev) => [...prev, data]);
+      setMessageText('');
+    } catch (err) {
+      Toast.show({ type: 'error', text1: 'Error', text2: err.message });
+    } finally {
+      setSendingMessage(false);
+    }
   };
+
+  const filteredConversations = conversations.filter((user) =>
+    `${user.firstName} ${user.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const renderConversationItem = ({ item }) => (
     <TouchableOpacity
       style={[
         styles.conversationItem,
-        selectedConversation?._id === item._id && styles.selectedConversation
+        selectedConversation?._id === item._id && styles.selectedConversation,
       ]}
       onPress={() => setSelectedConversation(item)}
     >
@@ -72,23 +147,19 @@ export default function ChatScreen() {
   );
 
   const renderMessageItem = ({ item }) => {
-    const isMyMessage = item.senderId !== selectedConversation?._id;
-    
+    const isMyMessage = item.senderId === userId;
+
     return (
-      <View style={[
-        styles.messageContainer,
-        isMyMessage ? styles.myMessage : styles.otherMessage
-      ]}>
-        <Text style={[
-          styles.messageText,
-          isMyMessage ? styles.myMessageText : styles.otherMessageText
-        ]}>
+      <View
+        style={[
+          styles.messageContainer,
+          isMyMessage ? styles.myMessage : styles.otherMessage,
+        ]}
+      >
+        <Text style={isMyMessage ? styles.myMessageText : styles.otherMessageText}>
           {item.message}
         </Text>
-        <Text style={[
-          styles.messageTime,
-          isMyMessage ? styles.myMessageTime : styles.otherMessageTime
-        ]}>
+        <Text style={isMyMessage ? styles.myMessageTime : styles.otherMessageTime}>
           {extractTime(item.createdAt)}
         </Text>
       </View>
@@ -98,7 +169,6 @@ export default function ChatScreen() {
   if (!selectedConversation) {
     return (
       <View style={styles.container}>
-        {/* Search Bar */}
         <View style={styles.searchContainer}>
           <Ionicons name="search" size={20} color={colors.gray} />
           <TextInput
@@ -109,15 +179,16 @@ export default function ChatScreen() {
           />
         </View>
 
-        {/* Conversations List */}
-        <FlatList
-          data={filteredConversations}
-          renderItem={renderConversationItem}
-          keyExtractor={(item) => item._id}
-          style={styles.conversationsList}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <Divider />}
-        />
+        {loadingConversations ? (
+          <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 20 }} />
+        ) : (
+          <FlatList
+            data={filteredConversations}
+            renderItem={renderConversationItem}
+            keyExtractor={(item) => item._id}
+            ItemSeparatorComponent={() => <Divider />}
+          />
+        )}
       </View>
     );
   }
@@ -138,26 +209,29 @@ export default function ChatScreen() {
         <Avatar.Image
           size={40}
           source={{
-            uri: selectedConversation.profilePic || 'https://via.placeholder.com/40'
+            uri: selectedConversation.profilePic || 'https://via.placeholder.com/40',
           }}
         />
         <View style={styles.chatHeaderInfo}>
           <Text style={styles.chatHeaderName}>
             {selectedConversation.firstName} {selectedConversation.lastName}
           </Text>
-          <Text style={styles.chatHeaderStatus}>Online</Text>
+          <Text style={styles.chatHeaderStatus}>Offline</Text>
         </View>
       </View>
 
-      {/* Messages List */}
-      <FlatList
-        data={messages}
-        renderItem={renderMessageItem}
-        keyExtractor={(item) => item._id}
-        style={styles.messagesList}
-        contentContainerStyle={styles.messagesContent}
-        showsVerticalScrollIndicator={false}
-      />
+      {/* Messages */}
+      {loadingMessages ? (
+        <ActivityIndicator size="large" color={colors.primary} style={{ marginTop: 20 }} />
+      ) : (
+        <FlatList
+          data={messages}
+          renderItem={renderMessageItem}
+          keyExtractor={(item) => item._id}
+          style={styles.messagesList}
+          contentContainerStyle={styles.messagesContent}
+        />
+      )}
 
       {/* Message Input */}
       <View style={styles.messageInputContainer}>
@@ -200,9 +274,6 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: spacing.sm,
     ...typography.body1,
-  },
-  conversationsList: {
-    flex: 1,
   },
   conversationItem: {
     flexDirection: 'row',
@@ -268,7 +339,7 @@ const styles = StyleSheet.create({
   },
   chatHeaderStatus: {
     ...typography.caption,
-    color: colors.success,
+    color: colors.error,
   },
   messagesList: {
     flex: 1,
@@ -290,24 +361,23 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     backgroundColor: colors.white,
   },
-  messageText: {
-    ...typography.body1,
-  },
   myMessageText: {
+    ...typography.body1,
     color: colors.white,
   },
   otherMessageText: {
+    ...typography.body1,
     color: colors.text,
   },
-  messageTime: {
+  myMessageTime: {
     ...typography.caption,
+    color: 'rgba(255, 255, 255, 0.7)',
     marginTop: spacing.xs,
   },
-  myMessageTime: {
-    color: 'rgba(255, 255, 255, 0.7)',
-  },
   otherMessageTime: {
+    ...typography.caption,
     color: colors.textSecondary,
+    marginTop: spacing.xs,
   },
   messageInputContainer: {
     flexDirection: 'row',
@@ -329,4 +399,3 @@ const styles = StyleSheet.create({
     ...typography.body1,
   },
 });
-
