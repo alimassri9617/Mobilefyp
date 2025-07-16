@@ -372,6 +372,7 @@ const createItem = async (itemData) => {
   setLoading(true);
   try {
     const formData = new FormData();
+
     formData.append('title', itemData.title);
     formData.append('description', itemData.description);
     formData.append('category', itemData.category);
@@ -379,18 +380,23 @@ const createItem = async (itemData) => {
     formData.append('phoneNumber', itemData.phoneNumber);
     formData.append('type', itemData.type);
 
-    if (itemData.image?.uri && itemData.image.uri.startsWith('file://')) {
-      const localUri = itemData.image.uri;
-      const filename = localUri.split('/').pop();
-      const match = /\.(\w+)$/.exec(filename || '');
-      const type = match ? `image/${match[1]}` : `image`;
-
+    if (itemData.image?.uri?.startsWith('data:image')) {
+      const blob = await (await fetch(itemData.image.uri)).blob();
       formData.append('image', {
-        uri: localUri,
-        name: filename,
-        type,
+        uri: itemData.image.uri,
+        name: 'photo.jpg',
+        type: blob.type,
       });
     }
+    console.log('Creating item with data:', {
+      title: itemData.title,
+      description: itemData.description,
+      category: itemData.category,
+      location: itemData.location,
+      phoneNumber: itemData.phoneNumber,
+      type: itemData.type,
+      image: itemData.image ? itemData.image.uri : 'No image',
+    });
 
     const res = await axios.post(BASE_URL, formData, {
       headers: {
@@ -406,15 +412,12 @@ const createItem = async (itemData) => {
       Toast.show({ type: 'error', text1: res.data?.message || 'Failed to post item' });
     }
   } catch (err) {
-    Toast.show({
-      type: 'error',
-      text1: err.response?.data?.message || 'Error creating item',
-    });
+    console.log('Upload Error:', err);
+    Toast.show({ type: 'error', text1: err.response?.data?.message || 'Error creating item' });
   } finally {
     setLoading(false);
   }
 };
-
 
 
 

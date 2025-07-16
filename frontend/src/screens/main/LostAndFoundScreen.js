@@ -627,16 +627,24 @@ const LostAndFoundScreen = () => {
                   return;
                 }
 
-                const pickerResult = await ImagePicker.launchImageLibraryAsync({
-                  allowsEditing: true,
-                  aspect: [4, 3],
-                  quality: 1,
-                });
+const pickerResult = await ImagePicker.launchImageLibraryAsync({
+  allowsEditing: true,
+  aspect: [4, 3],
+  quality: 1,
+  base64: true,
+});
 
-                if (!pickerResult.canceled && pickerResult.assets?.length > 0) {
-                  const uri = pickerResult.assets[0].uri;
-                  setNewItem({ ...newItem, image: { uri } });
-                }
+if (!pickerResult.canceled) {
+  const base64Uri = `data:image/jpeg;base64,${pickerResult.assets[0].base64}`;
+  setNewItem({ ...newItem, image: { uri: base64Uri } });
+}
+
+
+if (!pickerResult.canceled) {
+  const base64Uri = `data:image/jpeg;base64,${pickerResult.assets[0].base64}`;
+  setNewItem({ ...newItem, image: { uri: base64Uri } });
+}
+
               }}
               style={styles.imageUploadButton}
             >
