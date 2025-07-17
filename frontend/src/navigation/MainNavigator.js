@@ -17,7 +17,7 @@ import SignUpScreen from '../screens/auth/SignUpScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import { useAuthStore } from '../store/AuthStore';
 import CafeteriaMenu from "../screens/main/CafeteriaMenu"; // Assuming you have a CafeteriaMenuScreen
-
+import ContactMessagesScreen from '../screens/main/ContactMessagesScreen'; // Importing the ContactMessagesScreen
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -155,13 +155,24 @@ function MainDrawerNavigator() {
           ),
         }}
       />
-      {isAdmin && (
+      {/* {isAdmin && (
         <Drawer.Screen
           name="Sign Up Users"
           component={SignUpScreen}
           options={{
             drawerIcon: ({ color, size }) => (
               <Ionicons name="person-add-outline" size={size} color={color} />
+            ),
+          }}
+        />
+      )} */}
+      {isAdmin && (
+        <Drawer.Screen
+          name="Contact Messages"
+          component={ContactMessagesScreen}
+          options={{
+            drawerIcon: ({ color, size }) => (
+              <Ionicons name="contrast" size={size} color={color} />
             ),
           }}
         />

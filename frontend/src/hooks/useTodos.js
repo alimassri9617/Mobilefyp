@@ -75,7 +75,7 @@ export const useTodos = () => {
 
   const updateTodo = async (id, updates) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/todos/${id}`, updates, {
+      const res = await axios.put(`http://localhost:5000/api/todo/${id}`, updates, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
