@@ -996,7 +996,7 @@ export default function CafeteriaMenu() {
   const fetchMenu = async (day) => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/menu/${day}`, {
+      const response = await fetch(`${process.env.API_BASE_URL}/menu/${day}`, {
         headers: {
           Authorization: `Bearer ${authUser?.token}`,
         },
@@ -1023,7 +1023,7 @@ export default function CafeteriaMenu() {
   const handleSave = async () => {
     const { _id, name, protein, calories, image, category } = editingItem;
     try {
-      await fetch(`http://localhost:5000/api/menu/${selectedDay}/${category}/${_id}`, {
+      await fetch(`${process.env.API_BASE_URL}/menu/${selectedDay}/${category}/${_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -1040,7 +1040,7 @@ export default function CafeteriaMenu() {
 
   const handleDelete = async (itemId, category) => {
     try {
-      await fetch(`http://localhost:5000/api/menu/${selectedDay}/${category}/${itemId}`, {
+      await fetch(`${process.env.API_BASE_URL}/menu/${selectedDay}/${category}/${itemId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${authUser?.token}`,
@@ -1055,7 +1055,7 @@ export default function CafeteriaMenu() {
   const handleAddItem = async () => {
     const { name, protein, calories, image, category } = newItem;
     try {
-      await fetch(`http://localhost:5000/api/menu/${selectedDay}/${category}`, {
+      await fetch(`${process.env.API_BASE_URL}/menu/${selectedDay}/${category}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

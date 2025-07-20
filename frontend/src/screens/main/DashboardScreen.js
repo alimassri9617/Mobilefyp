@@ -45,7 +45,7 @@ const useContactForm = () => {
     setLoading(true);
     try {
       const res = await axios.post(
-        'http://localhost:5000/api/contact',
+        `${process.env.API_BASE_URL}/contact`,
         { title, description, category },
         {
           headers: {

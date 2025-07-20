@@ -24,7 +24,7 @@ export const usePomodoro = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/pomodoro/stats', {
+      const res = await fetch(`${process.env.API_BASE_URL}/pomodoro/stats`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

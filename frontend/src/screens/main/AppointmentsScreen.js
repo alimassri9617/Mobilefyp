@@ -615,7 +615,7 @@ const AppointmentsScreen = () => {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/appointments', {
+      const res = await axios.get(`${process.env.API_BASE_URL}/appointments`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -631,7 +631,7 @@ const AppointmentsScreen = () => {
   const handleAccept = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/appointments/${id}/accept`,
+        `${process.env.API_BASE_URL}/appointments/${id}/accept`,
         {},
         {
           headers: {
@@ -649,7 +649,7 @@ const AppointmentsScreen = () => {
   const handleReject = async (id) => {
     try {
       await axios.patch(
-        `http://localhost:5000/api/appointments/${id}/reject`,
+        `${process.env.API_BASE_URL}/appointments/${id}/reject`,
         {},
         {
           headers: {

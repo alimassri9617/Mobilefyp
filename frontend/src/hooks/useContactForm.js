@@ -73,7 +73,7 @@ export const useContactUs = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/contact/',
+        `${process.env.API_BASE_URL}/contact/`,
         { title, description, category },
         {
           headers: {
@@ -96,7 +96,7 @@ export const useContactUs = () => {
   const fetchAllMessages = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:5000/api/contact-us', {
+      const response = await axios.get(`${process.env.API_BASE_URL}/contact-us`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setContacts(response.data.data.messages);

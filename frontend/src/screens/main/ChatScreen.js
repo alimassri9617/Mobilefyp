@@ -34,7 +34,7 @@ export default function ChatScreen() {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5000/api/messages', {
+        const res = await fetch(`${process.env.API_BASE_URL}/messages`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -62,7 +62,7 @@ export default function ChatScreen() {
       setLoadingMessages(true);
       try {
         const res = await fetch(
-          `http://127.0.0.1:5000/api/messages/${selectedConversation._id}`,
+          `${process.env.API_BASE_URL}/messages/${selectedConversation._id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -90,7 +90,7 @@ export default function ChatScreen() {
     setSendingMessage(true);
     try {
       const res = await fetch(
-        `http://127.0.0.1:5000/api/messages/send/${selectedConversation._id}`,
+        `${process.env.API_BASE_URL}/messages/send/${selectedConversation._id}`,
         {
           method: 'POST',
           headers: {

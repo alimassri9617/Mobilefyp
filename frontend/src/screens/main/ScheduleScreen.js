@@ -18,7 +18,7 @@ const ScheduleScreen = () => {
     const fetchSchedule = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/sch/${id}/schedule`,
+          `${process.env.API_BASE_URL}/sch/${id}/schedule`,
           {
             headers: {
               'Content-Type': 'application/json',

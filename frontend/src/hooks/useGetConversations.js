@@ -14,7 +14,7 @@ export const useGetConversations = () => {
 
       setLoading(true);
       try {
-        const res = await fetch('http://127.0.0.1:5000/api/messages', {
+        const res = await fetch(`${process.env.API_BASE_URL}/messages`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

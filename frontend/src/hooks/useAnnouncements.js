@@ -171,7 +171,7 @@ export const useAnnouncements = () => {
 
   setLoading(true);
   try {
-    const res = await fetch(`http://127.0.0.1:5000${route}`, {
+    const res = await fetch(`${process.env.API_BASE_URL}${route}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -202,7 +202,7 @@ export const useAnnouncements = () => {
     if (!token) return;
 
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/announcements', {
+      const res = await fetch(`${process.env.API_BASE_URL}/api/announcements`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -236,7 +236,7 @@ export const useAnnouncements = () => {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/announcements/${announcementId}`, {
+      const res = await fetch(`${process.env.API_BASE_URL}/announcements/${announcementId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

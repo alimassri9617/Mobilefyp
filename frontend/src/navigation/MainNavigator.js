@@ -16,6 +16,7 @@ import AppointmentsScreen from '../screens/main/AppointmentsScreen';
 import SignUpScreen from '../screens/auth/SignUpScreen';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 import { useAuthStore } from '../store/AuthStore';
+import  ProfileScreen  from "../screens/main/ProfileScreen";
 import CafeteriaMenu from "../screens/main/CafeteriaMenu"; // Assuming you have a CafeteriaMenuScreen
 import ContactMessagesScreen from '../screens/main/ContactMessagesScreen'; // Importing the ContactMessagesScreen
 const Drawer = createDrawerNavigator();
@@ -177,6 +178,15 @@ function MainDrawerNavigator() {
           }}
         />
       )}
+      <Drawer.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          drawerIcon: ({ color, size }) => (
+            <Ionicons name='card' size={size} color={color} />
+          ),
+        }}
+      />
     </Drawer.Navigator>
   );
 }

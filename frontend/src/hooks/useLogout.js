@@ -11,7 +11,7 @@ export const useLogout = () => {
   const logout = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/auth/logout', {
+      const res = await fetch(`${process.env.API_BASE_URL}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });

@@ -1249,10 +1249,10 @@ export default function AnnouncementsScreen() {
       setLoading(true);
       const url =
         authUser.role === 'student'
-          ? 'http://localhost:5000/api/announcements/student'
+          ? `${process.env.API_BASE_URL}/announcements/student`
           : authUser.role === 'teacher'
-          ? 'http://localhost:5000/api/announcements/teacher'
-          : 'http://localhost:5000/api/announcements/admin';
+          ? `${process.env.API_BASE_URL}/announcements/teacher`
+          : `${process.env.API_BASE_URL}/announcements/admin`;
 
       const res = await fetch(url, {
         headers: {
@@ -1291,7 +1291,7 @@ export default function AnnouncementsScreen() {
           form.announcementType === 'subject' ? form.targetSubject : undefined,
       };
 
-      const res = await fetch('http://localhost:5000/api/announcements', {
+      const res = await fetch(`${process.env.API_BASE_URL}/announcements`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

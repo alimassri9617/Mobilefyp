@@ -529,13 +529,13 @@ const PomodoroScreen = () => {
   const token = authUser?.token;
 
   const [isRunning, setIsRunning] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(25 * 60);
+  const [timeLeft, setTimeLeft] = useState(1 * 60);
   const [currentMode, setCurrentMode] = useState('work');
   const [completedPomodoros, setCompletedPomodoros] = useState(0);
   const [stats, setStats] = useState({ totalMinutes: 0, todaySessions: 0 });
 
   const [settings, setSettings] = useState({
-    workDuration: 25,
+    workDuration: 1,
     shortBreakDuration: 5,
     longBreakDuration: 15,
     longBreakInterval: 4,
@@ -582,7 +582,7 @@ const PomodoroScreen = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/pomodoro/stats', {
+      const res = await fetch(`${process.env.API_BASE_URL}/pomodoro/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -601,7 +601,7 @@ const PomodoroScreen = () => {
 
   const recordSession = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/pomodoro/session', {
+      const res = await fetch(`${process.env.API_BASE_URL}/pomodoro/session`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

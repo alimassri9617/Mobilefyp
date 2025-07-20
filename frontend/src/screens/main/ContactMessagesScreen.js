@@ -8,7 +8,7 @@ import axios from 'axios';
 
 
 import Toast from 'react-native-toast-message';
-const API_BASE_URL = 'http://localhost:5000/api/contact';
+const API_BASE_URL = `${process.env.API_BASE_URL}/contact`;
 
 const ContactMessagesScreen = () => {
   const { authUser } = useAuthStore();

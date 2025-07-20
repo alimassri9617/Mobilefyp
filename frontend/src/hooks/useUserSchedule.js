@@ -15,7 +15,7 @@ export const useUserSchedule = () => {
 
       setLoading(true);
       try {
-        const res = await fetch(`http://127.0.0.1:5000/api/sch/${userId}/schedule`, {
+        const res = await fetch(`${process.env.API_BASE_URL}/sch/${userId}/schedule`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
