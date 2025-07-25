@@ -331,7 +331,8 @@ import { useAuthStore } from '../store/AuthStore';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 
-const BASE_URL = `${process.env.API_BASE_URL}/lost-and-found`;
+// const BASE_URL = `${process.env.API_BASE_URL}/lost-and-found`;
+const BASE_URL = `http://192.168.0.102:6666/api/lost-and-found`;
 
 export const useLostAndFound = () => {
   const [items, setItems] = useState([]);
@@ -389,15 +390,15 @@ const createItem = async (itemData) => {
         type: blob.type,
       });
     }
-    console.log('Creating item with data:', {
-      title: itemData.title,
-      description: itemData.description,
-      category: itemData.category,
-      location: itemData.location,
-      phoneNumber: itemData.phoneNumber,
-      type: itemData.type,
-      image: itemData.image ? itemData.image.uri : 'No image',
-    });
+    // console.log('Creating item with data:', {
+    //   title: itemData.title,
+    //   description: itemData.description,
+    //   category: itemData.category,
+    //   location: itemData.location,
+    //   phoneNumber: itemData.phoneNumber,
+    //   type: itemData.type,
+    //   image: itemData.image ? itemData.image.uri : 'No image',
+    // });
 
     const res = await axios.post(BASE_URL, formData, {
       headers: {

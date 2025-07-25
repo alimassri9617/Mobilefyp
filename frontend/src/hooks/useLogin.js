@@ -14,7 +14,7 @@ export const useLogin = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/auth/login`, {
+      const res = await fetch(`http://192.168.0.102:6666/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uniId, password }),

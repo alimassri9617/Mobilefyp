@@ -451,7 +451,7 @@ Question: ${question}
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer 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',
+          'Authorization': 'Bearer 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',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({

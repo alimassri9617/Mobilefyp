@@ -28,7 +28,7 @@ import cron from "node-cron";
 dotenv.config();
 
 const __dirname = path.resolve();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 6666;
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 app.use(cookieParser()); // Middleware to parse cookies

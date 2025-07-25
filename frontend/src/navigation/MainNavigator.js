@@ -22,10 +22,23 @@ import ContactMessagesScreen from '../screens/main/ContactMessagesScreen'; // Im
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
+import { View, Text, StyleSheet } from 'react-native';
+
+//------------------
+import { usePushNotifications} from '../hooks/usenotif'; // Importing the usePushNotifications hook
+//-----------
 function MainDrawerNavigator() {
   const { authUser } = useAuthStore();
   const isAdmin = authUser?.role === 'admin';
 
+
+ const { expoPushToken, notification } = usePushNotifications();
+const data = notification ? JSON.stringify(notification, null, 2) : "No notification yet";
+console.log(`data: ${data}`);
+
+
+  console.log(`Token: ${expoPushToken?.data ?? ""}`);
+ 
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}
@@ -39,6 +52,10 @@ function MainDrawerNavigator() {
         drawerInactiveTintColor: '#757575',
       }}
     >
+        {/* <View style={styles.container}>
+      <Text>Token: {expoPushToken?.data ?? ""}</Text>
+      <Text>Notification: {data}</Text>
+    </View> */}
       <Drawer.Screen
         name="Dashboard"
         component={DashboardScreen}
