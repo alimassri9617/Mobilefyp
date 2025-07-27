@@ -22,6 +22,7 @@ import {
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useAuthStore } from '../../store/AuthStore';
 import axios from 'axios'; // ✅ FIXED
+import Constants from 'expo-constants';
 
 const { width } = Dimensions.get('window');
 
@@ -45,7 +46,7 @@ const useContactForm = () => {
     setLoading(true);
     try {
       const res = await axios.post(
-        `${process.env.API_BASE_URL}/contact`,
+        `${Constants.expoConfig.extra.API_BASE_URL}/contact`,
         { title, description, category },
         {
           headers: {

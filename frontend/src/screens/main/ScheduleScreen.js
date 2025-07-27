@@ -3,7 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { Text, Card, Chip } from 'react-native-paper';
 import { useAuthStore } from '../../store/AuthStore';
 import axios from 'axios';
-
+import Constants from 'expo-constants';
 // Define the correct weekday order
 const weekdayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -18,7 +18,7 @@ const ScheduleScreen = () => {
     const fetchSchedule = async () => {
       try {
         const response = await axios.get(
-          `${process.env.API_BASE_URL}/sch/${id}/schedule`,
+          `${Constants.expoConfig.extra.API_BASE_URL}/sch/${id}/schedule`,
           {
             headers: {
               'Content-Type': 'application/json',

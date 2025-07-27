@@ -1220,6 +1220,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors, spacing, typography } from '../../constants/theme';
 import { useAuthStore } from '../../store/AuthStore';
 import { Dimensions } from 'react-native';
+import Constants from 'expo-constants';
 const screenHeight = Dimensions.get('window').height;
 export default function AnnouncementsScreen() {
   const { authUser } = useAuthStore();
@@ -1249,10 +1250,10 @@ export default function AnnouncementsScreen() {
       setLoading(true);
       const url =
         authUser.role === 'student'
-          ? `${process.env.API_BASE_URL}/announcements/student`
+          ? `${Constants.expoConfig.extra.API_BASE_URL}/announcements/student`
           : authUser.role === 'teacher'
-          ? `${process.env.API_BASE_URL}/announcements/teacher`
-          : `${process.env.API_BASE_URL}/announcements/admin`;
+          ? `${Constants.expoConfig.extra.API_BASE_URL}/announcements/teacher`
+          : `${Constants.expoConfig.extra.API_BASE_URL}/announcements/admin`;
 
       const res = await fetch(url, {
         headers: {
@@ -1291,7 +1292,7 @@ export default function AnnouncementsScreen() {
           form.announcementType === 'subject' ? form.targetSubject : undefined,
       };
 
-      const res = await fetch(`${process.env.API_BASE_URL}/announcements`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/announcements`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

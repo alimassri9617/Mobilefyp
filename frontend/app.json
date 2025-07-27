@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "UniAssist Mobile",
-    "slug": "uniassist-mobile",
+    "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -12,8 +12,10 @@
       "backgroundColor": "#ffffff"
     },
     "extra": {
+      "API_BASE_URL": "http://192.168.1.106:6666/api",
+      "SOCKET_URL":"http://192.168.1.106:6666",
       "eas": {
-        "projectId": "00000000-0000-0000-0000-000000000000"
+        "projectId": "ed5b6d0d-6708-4226-b1e3-662a08bfa1f1"
       }
     },
     "assetBundlePatterns": [
@@ -36,6 +38,7 @@
     "plugins": [
       "expo-notifications",
       "expo-secure-store"
-    ]
+    ],
+    "owner": "alimassri"
   }
 }

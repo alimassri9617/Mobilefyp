@@ -330,9 +330,8 @@ import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../store/AuthStore';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
-
-// const BASE_URL = `${process.env.API_BASE_URL}/lost-and-found`;
-const BASE_URL = `http://192.168.0.102:6666/api/lost-and-found`;
+import Constants from 'expo-constants';
+const BASE_URL = `${Constants.expoConfig.extra.API_BASE_URL}/lost-and-found`;
 
 export const useLostAndFound = () => {
   const [items, setItems] = useState([]);

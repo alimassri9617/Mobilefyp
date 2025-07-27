@@ -18,7 +18,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { useAuthStore } from '../../store/AuthStore';
-
+import Constants from 'expo-constants';
 const ProfileScreen = () => {
   const { authUser } = useAuthStore();
   const [user, setUser] = useState(null);
@@ -37,7 +37,7 @@ const ProfileScreen = () => {
 
   const fetchUserData = async () => {
     try {
-      const res = await axios.get(`${process.env.API_BASE_URL}/users/${authUser._id}`, {
+      const res = await axios.get(`${Constants.expoConfig.extra.API_BASE_URL}/users/${authUser._id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data);
@@ -48,7 +48,7 @@ const ProfileScreen = () => {
 
   const fetchSchedule = async () => {
     try {
-      const res = await axios.get(`${process.env.API_BASE_URL}/schedule/${authUser._id}/schedule`, {
+      const res = await axios.get(`${Constants.expoConfig.extra.API_BASE_URLL}/schedule/${authUser._id}/schedule`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSchedule(res.data);
@@ -59,7 +59,7 @@ const ProfileScreen = () => {
 
   const fetchPomodoroStats = async () => {
     try {
-      const res = await axios.get(`${process.env.API_BASE_URL}/pomodoro/${authUser._id}/stats`, {
+      const res = await axios.get(`${Constants.expoConfig.extra.API_BASE_URL}/pomodoro/${authUser._id}/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPomodoroStats(res.data);
@@ -87,7 +87,7 @@ const ProfileScreen = () => {
       try {
         setUploading(true);
         const res = await axios.patch(
-          `${process.env.API_BASE_URL}/users/${authUser._id}/profile-pic`,
+          `${Constants.expoConfig.extra.API_BASE_URL}/users/${authUser._id}/profile-pic`,
           formData,
           {
             headers: {

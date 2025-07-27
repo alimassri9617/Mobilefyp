@@ -24,7 +24,10 @@ import { app, server } from "./socket/socket.js";
 import { sendAppointmentReminders } from "./jobs/RemindAppointment.js"
 import { sendTodoReminders } from "./jobs/RemindTodo.js"
 import cron from "node-cron";
+import axios from "axios";
 
+
+import tokenRoutes from "./routes/token.routes.js";
 dotenv.config();
 
 const __dirname = path.resolve();
@@ -54,7 +57,7 @@ app.use("/api/appointments", AppointmentRoutes);
 app.use("/api/notifications" , notificationRoutes)
 app.use("/api/menu" , CafeteriaRoutes)
 app.use("/api/contact" , ContactUsRoutes)
-
+app.use("/api",tokenRoutes);
 
 app.use((err, req, res, next) => {
   // Set default status code and message
@@ -78,6 +81,52 @@ app.use((err, req, res, next) => {
 // app.get("*", (req, res) => {
 //   res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
 // });
+
+
+
+// let deviceTokens = [];
+
+// app.post('/save-token', (req, res) => {
+//   const { token } = req.body;
+  
+//   if (!deviceTokens.includes(token)) {
+//     deviceTokens.push(token);
+//     console.log(`Token saved: ${token}`);
+//   }
+//   res.json({ success: true });
+// });
+
+app.use('/api', tokenRoutes);
+
+
+
+
+// app.post('/send-notification', async (req, res) => {
+//   const { to, title, body, data } = req.body;
+
+//   const messages = Array.isArray(to) ? to : [to]; // allow one or many tokens
+
+//   const payloads = messages.map(token => ({
+//     to: token,
+//     sound: 'default',
+//     title,
+//     body,
+//     data,
+//   }));
+
+//   try {
+//     const response = await axios.post('https://exp.host/--/api/v2/push/send', payloads, {
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     });
+//     res.json({ success: true, response: response.data });
+//   } catch (err) {
+//     console.error('Error sending notification', err);
+//     res.status(500).json({ success: false });
+//   }
+// });
+
 
 // Start the server
 server.listen(PORT, () => {

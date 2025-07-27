@@ -42,7 +42,7 @@
 //   return { sendMessage, loading };
 // };
 
-
+import Constants from 'expo-constants';
 
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -68,7 +68,7 @@ export const useSendMessage = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/messages/send/${selectedConversation._id}`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/messages/send/${selectedConversation._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

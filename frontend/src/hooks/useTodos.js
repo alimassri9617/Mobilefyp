@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../store/AuthStore';
 import axios from 'axios';
-
+import Constants from 'expo-constants';
 export const useTodos = () => {
   const [loading, setLoading] = useState(false);
   const [todos, setTodos] = useState([]);
@@ -16,7 +16,7 @@ export const useTodos = () => {
   const fetchTodos = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/todo`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/todo`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -54,7 +54,7 @@ export const useTodos = () => {
         priority: todoData.priority, // Must be "Top", "Moderate", or "Low"
       };
 
-      const res = await fetch(`${process.env.API_BASE_URL}/todo`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/todo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ export const useTodos = () => {
 
   const updateTodo = async (id, updates) => {
     try {
-      const res = await axios.put(`${process.env.API_BASE_URL}/todo/${id}`, updates, {
+      const res = await axios.put(`${Constants.expoConfig.extra.API_BASE_URL}/todo/${id}`, updates, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -90,7 +90,7 @@ export const useTodos = () => {
 
   const deleteTodo = async (todoId) => {
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/todo/${todoId}`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/todo/${todoId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

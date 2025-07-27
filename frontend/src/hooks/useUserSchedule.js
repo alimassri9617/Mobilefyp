@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../store/AuthStore';
-
+import Constants from 'expo-constants';
 export const useUserSchedule = () => {
+
+
+
+
+
+
   const [loading, setLoading] = useState(false);
   const [schedule, setSchedule] = useState([]);
 
@@ -15,7 +21,7 @@ export const useUserSchedule = () => {
 
       setLoading(true);
       try {
-        const res = await fetch(`${process.env.API_BASE_URL}/sch/${userId}/schedule`, {
+        const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/sch/${userId}/schedule`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

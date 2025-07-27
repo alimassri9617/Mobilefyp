@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../store/AuthStore';
 import { useSocketStore } from '../store/SocketStore';
-
+import Constants from 'expo-constants';
 export const useLogout = () => {
   const [loading, setLoading] = useState(false);
   const { clearAuth } = useAuthStore();
@@ -11,7 +11,7 @@ export const useLogout = () => {
   const logout = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/auth/logout`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       });

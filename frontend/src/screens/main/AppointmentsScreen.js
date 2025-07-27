@@ -601,7 +601,7 @@ import {
 import axios from 'axios';
 import moment from 'moment';
 import { useAuthStore } from '../../store/AuthStore';
-
+import Constants from 'expo-constants';
 const AppointmentsScreen = () => {
   const { authUser } = useAuthStore();
   const token = authUser?.token;
@@ -615,7 +615,7 @@ const AppointmentsScreen = () => {
   const fetchAppointments = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${process.env.API_BASE_URL}/appointments`, {
+      const res = await axios.get(`${Constants.expoConfig.extra.API_BASE_URL}/appointments`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -631,7 +631,7 @@ const AppointmentsScreen = () => {
   const handleAccept = async (id) => {
     try {
       await axios.patch(
-        `${process.env.API_BASE_URL}/appointments/${id}/accept`,
+        `${Constants.expoConfig.extra.API_BASE_URL}/appointments/${id}/accept`,
         {},
         {
           headers: {
@@ -649,7 +649,7 @@ const AppointmentsScreen = () => {
   const handleReject = async (id) => {
     try {
       await axios.patch(
-        `${process.env.API_BASE_URL}/appointments/${id}/reject`,
+        `${Constants.expoConfig.extra.API_BASE_URL}/appointments/${id}/reject`,
         {},
         {
           headers: {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../store/AuthStore';
-
+import Constants from 'expo-constants';
 export const useLogin = () => {
   const [loading, setLoading] = useState(false);
   const { setAuthUser } = useAuthStore();
@@ -14,7 +14,7 @@ export const useLogin = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`http://192.168.0.102:6666/api/auth/login`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ uniId, password }),

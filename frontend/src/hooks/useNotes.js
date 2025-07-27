@@ -152,7 +152,7 @@ import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../store/AuthStore';
 import {NotesScreen} from '../screens/main/NotesScreen';
-
+import Constants from 'expo-constants';
 export const useNotes = () => {
   const [loading, setLoading] = useState(false);
   const [notes, setNotes] = useState([]);
@@ -168,7 +168,7 @@ export const useNotes = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/notes`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/notes`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ const createNote = async (noteData) => {
   if (!token) return;
 
   try {
-    const res = await fetch(`${process.env.API_BASE_URL}/notes`, {
+    const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/notes`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -272,7 +272,7 @@ const createNote = async (noteData) => {
     }
 
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/notes/${noteId}`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/notes/${noteId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -309,7 +309,7 @@ const createNote = async (noteData) => {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/notes/${noteId}`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/notes/${noteId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

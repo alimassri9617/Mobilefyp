@@ -4,6 +4,7 @@ import {
   sendMessage,
   markMessagesRead,
   getConversationsWithUnreadCount,
+  getDeviceToken,
 } from "../controllers/message.controller.js";
 import protectRoute from "../middleware/protectRoute.js";
 
@@ -13,5 +14,5 @@ router.get("/:id", protectRoute, getMessages);
 router.get("/", protectRoute, getConversationsWithUnreadCount);
 router.post("/send/:id", protectRoute, sendMessage);
 router.post("/read/:id", protectRoute, markMessagesRead);
-
+router.post("/token", protectRoute, getDeviceToken);
 export default router;

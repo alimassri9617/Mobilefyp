@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../store/AuthStore';
-
+import Constants from 'expo-constants';
 export const useGetStaff = () => {
   const [loading, setLoading] = useState(false);
   const [staff, setStaff] = useState([]);
@@ -14,7 +14,7 @@ export const useGetStaff = () => {
 
       setLoading(true);
       try {
-        const res = await fetch(`${process.env.API_BASE_URL}/users`, {
+        const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/users`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

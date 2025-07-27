@@ -338,6 +338,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useNotes } from '../../hooks/useNotes';
 
+
 const NotesScreen = () => {
   const {
     notes,

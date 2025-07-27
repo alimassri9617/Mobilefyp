@@ -14,7 +14,7 @@ export const useGetMessages = () => {
 
       setLoading(true);
       try {
-        const res = await fetch(`${process.env.API_BASE_URL}/messages/${selectedConversation._id}`, {
+        const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/messages/${selectedConversation._id}`, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`, // <-- attach token

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,6 +21,7 @@ import CafeteriaMenu from "../screens/main/CafeteriaMenu"; // Assuming you have 
 import ContactMessagesScreen from '../screens/main/ContactMessagesScreen'; // Importing the ContactMessagesScreen
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
+import axios from 'axios';
 
 import { View, Text, StyleSheet } from 'react-native';
 
@@ -34,11 +35,16 @@ function MainDrawerNavigator() {
 
  const { expoPushToken, notification } = usePushNotifications();
 const data = notification ? JSON.stringify(notification, null, 2) : "No notification yet";
-console.log(`data: ${data}`);
+// console.log(`data: ${data}`);
 
 
-  console.log(`Token: ${expoPushToken?.data ?? ""}`);
- 
+//   console.log(`Token: ${expoPushToken?.data ?? ""}`);
+console.log(`Token: ${expoPushToken?.data ?? ""}`);
+useEffect(() => {
+  axios.post('http://192.168.0.102:6666/save-token', {
+    token: expoPushToken?.data
+  });
+}, [expoPushToken]);
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} />}

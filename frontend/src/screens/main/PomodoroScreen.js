@@ -523,7 +523,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuthStore } from '../../store/AuthStore';
 import NotificationService from '../../services/NotificationService';
-
+import Constants from 'expo-constants';
 const PomodoroScreen = () => {
   const { authUser } = useAuthStore();
   const token = authUser?.token;
@@ -582,7 +582,7 @@ const PomodoroScreen = () => {
 
   const fetchStats = async () => {
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/pomodoro/stats`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/pomodoro/stats`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -601,7 +601,7 @@ const PomodoroScreen = () => {
 
   const recordSession = async () => {
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/pomodoro/session`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/pomodoro/session`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

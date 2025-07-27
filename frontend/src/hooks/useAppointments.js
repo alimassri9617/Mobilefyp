@@ -17,7 +17,7 @@ export const useAppointments = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/appointments`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/appointments`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export const useAppointments = () => {
     if (!token) return;
 
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/appointments`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/appointments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ export const useAppointments = () => {
     if (!token) return;
 
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/appointments/${appointmentId}`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/appointments/${appointmentId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export const useAppointments = () => {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/appointments/${appointmentId}`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/appointments/${appointmentId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ export const useAppointments = () => {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/appointments/${appointmentId}/accept`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/appointments/${appointmentId}/accept`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -162,7 +162,7 @@ export const useAppointments = () => {
     if (!token) return;
 
     try {
-      const res = await fetch(`http://127.0.0.1:5000/api/appointments/${appointmentId}/reject`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/appointments/${appointmentId}/reject`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

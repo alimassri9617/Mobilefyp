@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '../store/AuthStore';
-
+import Constants from 'expo-constants';
 export const usePomodoro = () => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
@@ -24,7 +24,7 @@ export const usePomodoro = () => {
 
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.API_BASE_URL}/pomodoro/stats`, {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/pomodoro/stats`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ export const usePomodoro = () => {
     if (!token) return;
 
     try {
-      const res = await fetch('http://127.0.0.1:5000/api/pomodoro/session', {
+      const res = await fetch(`${Constants.expoConfig.extra.API_BASE_URL}/pomodoro/session`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

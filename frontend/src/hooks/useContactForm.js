@@ -63,7 +63,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useAuthStore } from '../store/AuthStore';
-
+import Constants from 'expo-constants';
 export const useContactUs = () => {
   const [loading, setLoading] = useState(false);
   const [contacts, setContacts] = useState([]);
@@ -73,7 +73,7 @@ export const useContactUs = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${process.env.API_BASE_URL}/contact/`,
+        `${Constants.expoConfig.extra.API_BASE_URL}/contact/`,
         { title, description, category },
         {
           headers: {
@@ -96,7 +96,7 @@ export const useContactUs = () => {
   const fetchAllMessages = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${process.env.API_BASE_URL}/contact-us`, {
+      const response = await axios.get(`${Constants.expoConfig.extra.API_BASE_URL}/contact-us`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setContacts(response.data.data.messages);
